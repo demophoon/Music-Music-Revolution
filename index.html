@@ -1,0 +1,189 @@
+
+<html>
+    <head>
+        <title>Music Music Revolution</title>
+        <link rel="stylesheet" type="text/css" href="./assets/css/mainStyle.css" />
+        <script type='text/javascript' src='./assets/js/jquery.js'></script>
+        <script type='text/javascript' src='./assets/js/music.js'></script>
+        <script type='text/javascript' src='./assets/js/game.js'></script>
+        <script type='text/javascript'>
+            function showAlbumArt(src) {
+                $('#albumArt').attr('src',src);
+                $('#albumArt').stop(true, false).animate({opacity:1},750);
+            }
+            function hideAlbumArt() {
+                $('#albumArt').stop(true, false).animate({opacity:0},750);
+            }
+        </script>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-34554503-1']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+    </head>
+    <body onmouseover='resetDemoMode()' onkeypress='resetDemoMode()'>
+        <div id='container'>
+            
+            <div id='loadingScreen'>
+                <center>
+                    <br>
+                    <h2>Music Music Revolution</h2>
+                    <small>Britt Gresham</small><br>
+                    <img src='./assets/img/logo.gif' /><br><br>
+                    <div id='tips'></div>
+                    <br><br>
+                    <progress id='musicProgress' value='0' max='100'></progress>
+                    <div id='loadingIcon'><br><br>
+                        <img src='./assets/img/loading.gif' />
+                    </div>
+                </center>
+            </div>
+            
+            <div id='filePrompt'>
+                <center>
+                    <h1>Music Music Revolution</h1>
+                </center>
+                
+                <div id='menuContainer'>
+                    <div id='accordion'>
+                        <div rel='How To Play' class='collapsibleContainer first'>
+                            <div class='pad'>
+                                <li>Use the Left, Up, and Right Arrows to hit the notes as they come down!</li>
+                                <li>To end the game press Escape at any time.</li>
+                                <li>Select only Mp3 Files. (Techno/Rap work the best)</li>
+                                <li>If the page crashes or fails to load try selecting a Mp3 without Cover Artwork</li>
+                            </div>
+                        </div>
+                        
+                        <div rel='Options' class='collapsibleContainer'>
+                            <div class='pad'>
+                                <table>
+                                    <tr>
+                                        <td>Difficulty:</td>
+                                        <td>
+                                            <select id='difficulty' onchange='changeSettings();'>
+                                                <option value='1.05'>Expert</option>
+                                                <option value='1.1'>Hard</option>
+                                                <option value='1.15'>Medium</option>
+                                                <option value='1.2' selected>Normal</option>
+                                                <option value='1.3'>Easy</option>
+                                                <option value='1.4'>Novice</option>
+                                                <option value='1.5'>Beginner</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Speed: </td>
+                                        <td>
+                                            <select id='speed' disabled onchange='changeSettings();'>
+                                                <option value='4'>Lightning</option>
+                                                <option value='2'>Fast</option>
+                                                <option value='1.5'>Medium</option>
+                                                <option value='1' selected>Normal</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div rel='Song Selection' class='collapsibleContainer'>
+                            <div>
+                                <table width='584px' cellspacing=10 id='musicSelection'>
+                                    <tr>
+                                        <th width='292px'>The Former</th>
+                                        <th width='292px'>Michael Marchenko</th>
+                                    </tr>
+                                    <tr onmouseout='hideAlbumArt()'>
+                                        <td>
+                                            <input id='btn' type='button' value='Funktronica' onmouseover='showAlbumArt("./music/theformer/albumart.jpg")' onclick='downloadSong("./music/theformer/funktronica.ogg");'/>
+                                            <input id='btn' type='button' value='Fall From Grace' onmouseover='showAlbumArt("./music/theformer/albumart.jpg")' onclick='downloadSong("./music/theformer/fallfromgrace.ogg");'/>
+                                        </td>
+                                        <td>
+                                            <input id='btn' type='button' value='Riot' onmouseover='showAlbumArt("./music/michaelmarchenko/albumart.jpg")' onclick='downloadSong("./music/michaelmarchenko/riot.ogg");'/>
+                                            <input id='btn' type='button' value='Slide On' onmouseover='showAlbumArt("./music/michaelmarchenko/albumart.jpg")' onclick='downloadSong("./music/michaelmarchenko/slideon.ogg");'/>
+                                            <input id='btn' type='button' value='When Everything is Everything' onmouseover='showAlbumArt("./music/michaelmarchenko/albumart.jpg")' onclick='downloadSong("./music/michaelmarchenko/wheneverythingiseverything.ogg");'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table width='584px' cellspacing=10 id='musicSelection'>
+                                    <tr>
+                                        <th width='292px'>Harlan Ray</th>
+                                        <th width='292px'>The Monarchs</th>
+                                    </tr>
+                                    <tr onmouseout='hideAlbumArt()'>
+                                        <td>
+                                            <input id='btn' type='button' value='Reticent' onmouseover='showAlbumArt("./music/harlanray/albumart.jpg")' onclick='downloadSong("./music/harlanray/reticent.ogg");'/>
+                                            <input id='btn' type='button' value='Uptight Android' onmouseover='showAlbumArt("./music/harlanray/albumart.jpg")' onclick='downloadSong("./music/harlanray/uptightandroid.ogg");'/>
+                                        </td>
+                                        <td>
+                                            <input id='btn' type='button' value='Annica' onmouseover='showAlbumArt("./music/themonarchs/albumart.jpg")' onclick='downloadSong("./music/themonarchs/annica.ogg");'/>
+                                            <input id='btn' type='button' value='Medios' onmouseover='showAlbumArt("./music/themonarchs/albumart.jpg")' onclick='downloadSong("./music/themonarchs/medios.ogg");'/>
+                                            <input id='btn' type='button' value='Posideon' onmouseover='showAlbumArt("./music/themonarchs/albumart.jpg")' onclick='downloadSong("./music/themonarchs/posideon.ogg");'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table width='584px' cellspacing=10 id='musicSelection'>
+                                    <tr>
+                                        <th width='584px'>Upload Your Own Mp3 (Experimental)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" id='uploadbtn' value="Upload a Song" onclick="document.getElementById('files').click();" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div rel='Credits' class='collapsibleContainer'>
+                            <div class='pad'>
+                                Created By: Britt Gresham<br>
+                                Artwork: Britt Gresham<hr>
+                                Music: <a href='http://www.mikhailmarchenko.com/'>Michael Marchenko</a>, 
+                                <a href='http://theformermusic.com/'>The Former</a>, 
+                                <a href='http://www.deflektrecords.com/'>Harlan Ray</a>, 
+                                <a href='http://www.themonarchsmusic.com/'>The Monarchs</a>
+                            </div>
+                        </div>
+                    </div>
+					
+                </div>
+                <img id='logo' src='./assets/img/logo.gif' />
+                
+                <img id='albumArt' src='./music/theformer/albumart.jpg' />
+                
+                <input type="file" id="files" accept="audio" />
+                
+            </div>
+            
+            <div id='splashScreen'>
+                <center>
+                    <br>
+                    <h2>Music Music Revolution</h2>
+                    <small>Britt Gresham</small><br>
+                    <img src='./assets/img/preload.gif' />
+                    <br><br>
+                    Menu Music by The Former<br><br><br>
+                    <progress id='initProgress' value='0' max='100'></progress>
+            </div>
+            
+            <center>
+                <canvas id='canvas' style='background:#393939' width='1200px' height='650px' >
+                    Sorry, Your Browser does not support the Canvas Element needed to play.
+                </canvas>
+            </center>
+        </div>
+        <center>
+            <small>
+                Find a bug? Suggest a Feature? Comment?<br>
+                Email Me at <a href='mailto:brittcgresham@gmail.com'>brittcgresham@gmail.com</a>
+            </small>
+        </center>
+    </body>
+</html>
