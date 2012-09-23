@@ -46,7 +46,7 @@ var maxWait = 0.2;
 var lastbeat = 0;
 var bpm = 0;
 
-var versionString = '1.32.02 Beta';
+var versionString = '1.40.00 Beta';
 
 var tips = [
     "If the game is too hard for you try an easier mode",
@@ -129,6 +129,7 @@ function play(buffer) {
     hideLoadingScreen();
     hideFilePrompt();
     showGame();
+    
     playing = true;
     
     source      =       audioContext.createBufferSource();

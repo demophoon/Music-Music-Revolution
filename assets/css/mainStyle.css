@@ -8,7 +8,7 @@ body {
 }
 #container {
     background:#000;
-    width:1200px;
+    width:1024px;
     min-height:500px;
     margin: auto;
     padding:0px;
@@ -22,24 +22,29 @@ td {
     border-bottom:1px solid #000;
     border-right:1px solid #000;
 }
+#canvas {
+    position:absolute;
+}
+#splashScreen, #filePrompt, #loadingScreen, #canvas, #background {
+    width:1024px;
+    height:600px;
+}
 #splashScreen {
     background:url(../img/splash.jpg);
     background-size:100% 100%;
     color:#f1f1f1;
     position:absolute;
-    width:1200px;
-    height:650px;
 }
 #logo {
     position:absolute;
-    right:140px;
-    top:275px;
+    right:100px;
+    top:225px;
 }
 #filePrompt{
     background-repeat: repeat;
     background-attachment:fixed;
-    background:url(../img/fade.png),url(../img/fg.png),url(../img/mg.png),url(../img/bg.png),url(../img/bbg.png),url(../img/background.jpg);
-    background-size:8px 8px, 600px 600px, 300px 300px, 300px 300px, 300px 300px, 100% 100%;
+    background:url(../img/fade.png),url(../img/fg.png),url(../img/mg.png),url(../img/bg.png),url(../img/background.jpg);
+    background-size:8px 8px, 600px 600px, 300px 300px, 300px 300px, 100% 100%;
     -webkit-animation: bg 30s;
     -webkit-animation-iteration-count:infinite;
     -webkit-animation-timing-function:linear;
@@ -47,11 +52,11 @@ td {
 @-webkit-keyframes bg {
     0%
     {
-        background-position: 0px 0px, 1800px 1800px, 900px 900px, 600px 600px, 300px 300px, 0px 0px;
+        background-position: 0px 0px, 1800px 1800px, 900px 900px, 600px 600px, 0px 0px;
     }
     100%
         {
-        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
     }
 }
 #loadingScreen {
@@ -62,8 +67,6 @@ td {
     opacity:0;
     color:#f1f1f1;
     position:absolute;
-    width:1200px;
-    height:650px;
 }
 table, tr, td, th {
     border:0px;
@@ -150,9 +153,9 @@ progress {
 #albumArt {
     opacity:0;
     position: absolute;
-    right: 35px;
+    right: 7px;
     top: 120px;
-    width: 410px;
+    width: 325px;
 }
 #musicSelection tr td input{
     font-size:10px;

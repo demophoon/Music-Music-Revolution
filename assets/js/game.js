@@ -21,7 +21,7 @@ var mmgain = null;
 var demoModeEnabled = false;
 var userDifficulty = c;
 
-var hitSize = 40;
+var hitSize = 20;
 
 var demoModeTimer = null;
 
@@ -31,8 +31,8 @@ function resetDemoMode() {
         resetGame()
         demoModeEnabled = false;
         c = userDifficulty;
-        maxbpm = 400;
-        maxWait = 0.2;
+        maxbpm = 350;
+        maxWait = 0.25;
     }
     clearTimeout(demoModeTimer);
     if (playing == false) {
@@ -41,6 +41,7 @@ function resetDemoMode() {
 }
 
 function demoMode() {
+    return false;
     clearTimeout(demoModeTimer);
     demoModeEnabled = true;
     userDifficulty = c;
@@ -110,7 +111,7 @@ function hideSplashScreen() {
 }
 
 function showFilePrompt() {
-    resetDemoMode();
+    // resetDemoMode();
     resetGame()
     console.log('Main Menu Show');
     console.log('Fade In Menu Music');
@@ -179,6 +180,9 @@ function startMainMenuMusic() {
 }
 
 var ctx = null;
+var canvasContext = null;
+var bgctx = null;
+var bgcanvasContext = null;
 var width = 0;
 var height = 0;
 var frametime = (new Date)*1 - 1;
@@ -208,21 +212,19 @@ var bg = new Image();
 bg.src = './assets/img/gamebg.jpg';
 
 function loadGame() {
-    var canvasContext = document.getElementById('canvas');
+    canvasContext = document.getElementById('canvas');
+    bgcanvasContext = document.getElementById('background');
+    bgBefore = canvasContext;
     width = canvasContext.width;
     height = canvasContext.height;
-    yplace = height - .5 - (2*hitSize);
+    yplace = (height*.9) - .5 - (2*hitSize);
     ctx = canvasContext.getContext('2d');
+    bgctx = bgcanvasContext.getContext('2d');
     gameLoop();
 }
 
-function gameLoop() {
-    frametime = (new Date)*1 - 1;
-    ctx.globalAlpha = 0.15;
-    ctx.fillStyle = '#393939';
-    ctx.fillRect(0,0,width,height);
-    ctx.drawImage(bg,0,0,width,height);
-    ctx.globalAlpha = 1;
+function drawGameStats() {
+    
     ctx.textAlign = 'start';
     ctx.textBaseline = "middle";
     ctx.font = "9pt Arial";
@@ -235,9 +237,120 @@ function gameLoop() {
     ctx.fillText("Hit Rating: " + rating,15,40);
     
     ctx.textAlign = 'right';
-    ctx.fillText("[ESC] to return to Menu",width-15,24);
+    ctx.fillText("[ESC] to return to Menu",width-11,24);
     
-    draw();
+    for (key in lastHits) {
+        ctx.fillStyle = '#dfe448';
+        ctx.strokeStyle = '#ffffff';
+        pump = hitSize + 25;
+        
+        if (Math.abs(lastHits[key] - audioContext.currentTime) < .25) {
+            ctx.globalAlpha = (1-(audioContext.currentTime - lastHits[key])/.1) > 0 ? 1-(audioContext.currentTime - lastHits[key])/.1 : 0;
+            switch (key) {
+                case '0':
+                    ctx.fillRect(300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+                    ctx.strokeRect(300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+                break;
+                case '1':
+                    ctx.fillRect(width/2+.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+                    ctx.strokeRect(width/2+.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+                break;
+                case '2':
+                    ctx.fillRect(width-300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+                    ctx.strokeRect(width-300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+                break;
+            }
+            ctx.globalAlpha = 1;
+        }
+    }
+    
+}
+
+var bgBefore = null;
+var visualEffect = {'effect':1,'expires':0};
+var waveformEffect = {'effect':1,'expires':0,'color':'#ffffff'};
+
+function drawBackground() {
+    bgctx.globalAlpha = .25;
+    bgctx.drawImage(bg,0,0,width,height);
+    bgctx.globalAlpha = .25;
+    
+    if (visualEffect['expires'] < audioContext.currentTime) {
+        visualEffect = {'effect':Math.ceil(Math.random()*13),'expires':audioContext.currentTime+1+(Math.random()*20)};
+    }
+    
+    bgctx.save();
+    
+    switch(visualEffect['effect']) {
+        case 1:
+            bgctx.translate(width/2, height/2);
+            bgctx.rotate(2*Math.PI / 90);
+            bgctx.translate( -width/2, -height/2);
+            bgctx.drawImage(bgBefore,0,0,width,height);
+        break;
+        case 2:
+            bgctx.drawImage(bgBefore,Math.random()*10,Math.random()*10,width,height);
+        break;
+        case 3:
+            bgctx.drawImage(bgBefore,-1,-20,width+2,height+40);
+        break;
+        case 4:
+            bgctx.drawImage(bgBefore,-20,1,width+40,height-2);
+        break;
+        case 5:
+            bgctx.drawImage(bgBefore,-50,-50,width+100,height+100);
+        break;
+        case 6:
+            bgctx.drawImage(bgBefore,20,-10,width+(Math.sin(audioContext.currentTime/5)*40),height+(Math.sin(audioContext.currentTime/2)*40));
+        break;
+        case 7:
+            bgctx.drawImage(bgBefore,12-(Math.sin(audioContext.currentTime/8)*25),12-(Math.sin(audioContext.currentTime/3)*20),width,height);
+        break;
+        case 8:
+            bgctx.drawImage(bgBefore,12-(Math.sin(audioContext.currentTime/7)*30),12-(Math.sin(audioContext.currentTime/4)*11),width+(Math.sin(audioContext.currentTime/5)*37),height+(Math.sin(audioContext.currentTime/2)*12));
+        break;
+        case 9:
+            var centerw = Math.abs(Math.sin(audioContext.currentTime) * (width));
+            var centerh = Math.abs(Math.sin(audioContext.currentTime/3) * (height));
+            bgctx.translate(centerw, centerh);
+            bgctx.rotate((Math.sin(audioContext.currentTime*2)) * 2*Math.PI / 45);
+            bgctx.translate(-centerw, -centerh);
+            bgctx.drawImage(bgBefore,-10,-10,width-(Math.sin(audioContext.currentTime*2)*20),height-(Math.sin(audioContext.currentTime*2)*20));
+        break;
+        case 10:
+            bgctx.translate( width/2, height/2);
+            bgctx.rotate(2*Math.PI / (Math.sin(audioContext.currentTime/10)*1));
+            bgctx.translate(-width/2,-height/2);
+            bgctx.drawImage(bgBefore,0,0,width/2,height/2);
+            bgctx.drawImage(bgBefore,width/2,0,width/2,height/2);
+            bgctx.drawImage(bgBefore,0,height/2,width/2,height/2);
+            bgctx.drawImage(bgBefore,width/2,height/2,width/2,height/2);
+        break;
+        case 11:
+            bgctx.drawImage(bgBefore,width/2,height/2,width/3,height/3,0,0,width/2,height/2);
+            bgctx.drawImage(bgBefore,0,height/2,width/3,height/3,width/2,0,width/2,height/2);
+            bgctx.drawImage(bgBefore,width/2,0,width/3,height/3,0,height/2,width/2,height/2);
+            bgctx.drawImage(bgBefore,0,0,width/4,height/4,width/2,height/2,width/2,height/2);
+        break;
+    }
+    
+    if (playing) {
+        drawWaveform();
+    }
+    bgctx.globalAlpha = 1;
+    bgBefore = bgcanvasContext;
+    
+    bgctx.restore();
+}
+
+function gameLoop() {
+    frametime = (new Date)*1 - 1;
+    
+    drawBackground();
+    
+    drawGameplay();
+    
+    drawGameStats();
     
     if (Math.abs(lastHit - audioContext.currentTime) < .5) {
         ctx.font = "italic 50px Calibri";
@@ -293,44 +406,129 @@ function gameLoop() {
     }
     if (endOfSong)
         endSong();
-    setTimeout(function() { gameLoop() }, (1000/30) - ((new Date)*1-1-frametime));
+    setTimeout(function() { gameLoop() }, (1000/60) - ((new Date)*1-1-frametime));
+}
+
+function genHex() {
+    hexc = new Array(14)
+    hexc[0]="0"
+    hexc[1]="1"
+    hexc[2]="2"
+    hexc[3]="3"
+    hexc[4]="4"
+    hexc[5]="5"
+    hexc[5]="6"
+    hexc[6]="7"
+    hexc[7]="8"
+    hexc[8]="9"
+    hexc[9]="a"
+    hexc[10]="b"
+    hexc[11]="c"
+    hexc[12]="d"
+    hexc[13]="e"
+    hexc[14]="f"
+
+    digit = new Array(5)
+    color="#"
+    for (i=0;i<6;i++){
+        digit[i]=hexc[Math.round(Math.random()*14)]
+        color = color+digit[i]
+    }
+    return color;
 }
 
 var waves = new Uint8Array(1024);
 var curfft = new Float32Array(1024);
 
 function drawWaveform() {
-    wavewidth = width/waves.length;
     postanalyser.getByteTimeDomainData(waves);
     postanalyser.getFloatFrequencyData(curfft);
-    ctx.fillStyle = '#ffffff';
-    var wavesize = (400/(curfft[0]+400))*10;
-    for (var x=0; x<waves.length; x+=1) {
-        ctx.fillRect(wavewidth*x-(wavesize/2),(waves[x]-128)+(height/2)-(wavesize/2),wavesize,wavesize);
+    
+    wavewidth = width/waves.length;
+    
+    if (waveformEffect['expires'] < audioContext.currentTime) {
+        waveformEffect = {
+            'effect':Math.floor(Math.random()*11),
+            'expires':audioContext.currentTime+1+(Math.random()*20),
+            'color':genHex()
+        };
     }
+    
+    bgctx.fillStyle = waveformEffect['color'];
+    var wavesize = (400/(curfft[0]+400))*10;
+    
+    for (var x=0; x<waves.length; x+=1) {
+        switch (waveformEffect['effect']) {
+            case 0:	// Spectrum
+                bgctx.globalAlpha = .25;
+                bgctx.fillRect(x*(width/(1024 - 512)),height,(width/(1024-512)),-(height/2*(curfft[x]/70))-height);
+                bgctx.globalAlpha = .1;
+            break;
+            case 1:	// Waveform 1
+                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/2)-.5,(width/(1024 - 512))*2,2);
+            break;
+            case 2: // Waveform 2
+                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/2)-.5,(width/(1024 - 512))*2,(waves[x]-128));
+            break;
+            case 3: // Spectrum Peaks
+                bgctx.fillRect(x*(width/(1024 - 512)),-(height*(curfft[x]/70))-(height/4),(width/(1024 -512)),2);
+            break;
+            case 4: // Waveform Boxes
+                bgctx.fillRect(x*(width/(1024 - 512)),(Math.sin(audioContext.currentTime + x/128 + (Math.random()/10))*(height/2))+(height/2),((waves[x-1]-waves[x])*1),((waves[x-1]-waves[x])*1));
+            break;
+            case 5: // Real Waveform
+                bgctx.globalAlpha = 1;
+                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/2)-.5,2,((waves[x-1]-waves[x])*2)+1);
+            break;
+            case 6: // Waveform Boxes
+                bgctx.globalAlpha = .1;
+                bgctx.fillRect(x*(width/(1024 - 512)),height/2,((waves[x-1]-waves[x])*8),((waves[x-1]-waves[x])*8));
+                bgctx.globalAlpha = 1;
+            break;
+            case 7: // Random Boxes
+                bgctx.globalAlpha = .7;
+                bgctx.fillRect(width*Math.random(),height*Math.random(),((waves[x-2]-waves[x+2])/2),((waves[x-2]-waves[x+2])/2));
+                bgctx.globalAlpha = 1;
+            break;
+            case 8: // Real Waveform
+                bgctx.globalAlpha = 1;
+                bgctx.fillRect(x*(width/(1024 - 512)),-(height*(curfft[x]/100))-(height/4),2,2);
+            break;
+            case 9: // Real Waveform
+                bgctx.globalAlpha = 1;
+                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/4)+Math.sin(audioContext.currentTime + x/128)*(height/2)+(height/2),2,((waves[x-1]-waves[x])*2)+1);
+                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*3*height/4)+Math.sin(audioContext.currentTime - x/128)*(height/4)+(height/4),2,((waves[x-1]-waves[x])*4)+1);
+            break;
+            default:
+                bgctx.fillRect(wavewidth*x-(wavesize/2),(waves[x]-128)+(height/2)-(wavesize/2),wavesize,wavesize);
+        }
+    }    
+    
 }
 
-function draw() {
-    
-    if (playing)
-        drawWaveform();
-    
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(225,0,(width-225)-225+hitSize,height);
-    ctx.globalAlpha = 1;
+function drawGameplay() {
+
+    ctx.clearRect(0,0,width,height);
     
     $('#score').html(finalscore);
     ctx.strokeStyle = '#dfe448';
     
     ctx.globalCompositeOperation = 'source-over';
     
+    ctx.globalAlpha = 0.75;
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(225,0,(width-225)-225+hitSize,height);
+    ctx.globalAlpha = 1;
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(220,((audioContext.currentTime - startTime)/duration)*height,5,height);
+    ctx.fillRect(width-225+hitSize,((audioContext.currentTime - startTime)/duration)*height,5,height);
+    
     pump = 0;
-    
-    
     ctx.strokeRect(300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
     ctx.strokeRect((width/2)-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
     ctx.strokeRect(width-300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
+    
     for (var x=0; x<hits.length; x+=1) {
         ctx.fillStyle = (hits[x]['color'] == 'rand') ? colors[~~(Math.random()*colors.length)] : hits[x]['color'];
         switch (hits[x]['type']) {
@@ -457,6 +655,8 @@ var VOLUMEUP    = 187;
 
 $(document).keydown(keyHit);
 
+var lastHits = {0:0,1:0,2:0};
+
 function keyHit(e) {
     if (e.which == RETURN && endOfGame == false) {
         endOfGame = true;
@@ -556,6 +756,7 @@ function keyHit(e) {
         }
         
         lastHit = audioContext.currentTime;
+        lastHits[types[key]] = lastHit;
         
         if (types[key] == closest['type'] && $.inArray(key,kprototypevar) != -1) {
             finalscore += pts * multiplier * multiplierMultiplier;
