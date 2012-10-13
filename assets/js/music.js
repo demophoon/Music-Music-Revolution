@@ -40,13 +40,13 @@ var analyser = null;
 var analyserhelper = new Float32Array(1024);
 var lastsums = new Array();
 var c = 1.2;
-var maxbpm = 400;
+var maxbpm = 300;
 var maxWait = 0.2;
 
 var lastbeat = 0;
 var bpm = 0;
 
-var versionString = '1.40.00 Beta';
+var versionString = '1.40.15 Beta';
 
 var tips = [
     "If the game is too hard for you try an easier mode",
@@ -204,7 +204,7 @@ function fadeOutGameMusic() {
 var lastBeatFlag = false;
 var lastBeatFlags = new Array(1024);
 for (var x=0; x<1024; x+=1) {
-    lastBeatFlags[x] = false;
+    lastBeatFlags[x] = 0;
 }
 var lastSpawn = 0;
 
@@ -257,8 +257,8 @@ function monitor() {
         }
         localavg = bandsum/(lastsums.length-1);
         // if (currentsum[band]*(c*(1/band+1)) > localavg) {
-        if (currentsum[band]*(c) > localavg && lastBeatFlags[band] == false) {
-            lastBeatFlags[band] = true;
+        if (currentsum[band]*(c) > localavg && lastBeatFlags[band] <= 0) {
+            lastBeatFlags[band] += 60;
             beats += 1;
             if (band > (3*subbands/4)) {
                 high += 2;
@@ -271,7 +271,7 @@ function monitor() {
             }
             beatband += band;
         } else {
-            lastBeatFlags[band] = false;
+            lastBeatFlags[band] -= 1;
         }
     }
     
@@ -290,13 +290,13 @@ function monitor() {
             lastbeat = beat;
             
             if (~~(Math.random()*16) == 8) {
-                spawnHit(~~(Math.random*3));
+                spawnHit(~~(Math.random*3), beatband);
             } else if (beatband > 1200) {
-                spawnHit(0);
+                spawnHit(0, beatband);
             } else if (beatband <= 1200 && beatband >= 600) {
-                spawnHit(1);
+                spawnHit(1, beatband);
             } else if (beatband < 600) {
-                spawnHit(2);
+                spawnHit(2, beatband);
             }
             
         }
@@ -315,32 +315,39 @@ function monitor() {
 }
 
 var reader = null;
+var multiBuffers = [];
+
 
 function handleFileSelect(evt) {
     showLoadingScreen();
     hideFilePrompt();
-    var filename = evt.target.files[0]; // FileList object
+    multiBuffers = [];
     
-    reader = new FileReader();
+    var filenames = evt.target.files; // FileList object
+    duration = 0;
     
-    reader.onload = function() {
-        console.log('Download Complete');
-        $('#musicProgress').attr("value",95);
+    for (var buffernum=0; buffernum<filenames.length; buffernum+=1) {
+        reader = new FileReader();
         
-        audioContext.decodeAudioData(reader.result, function(buffer){
-            console.log('Audio Decoded');
-            $('#musicProgress').attr("value",100);
-            duration = buffer.duration;
-            play(buffer);
-        }, function() {
-            alert('Cannot Decode Track!');
-            console.log('Cannot Decode Track!');
-            hideLoadingScreen();
-            showFilePrompt();
-        });
-    };
+        reader.onload = function() {
+            console.log('Download Complete');
+            $('#musicProgress').attr("value",95);
+            
+            audioContext.decodeAudioData(reader.result, function(buffer){
+                console.log('Audio Decoded');
+                multiBuffers[buffernum] = buffer;
+                $('#musicProgress').attr("value",100);
+                duration += multiBuffers[buffernum].duration;
+            }, function() {
+                alert('Cannot Decode Track!');
+                console.log('Cannot Decode Track!');
+                hideLoadingScreen();
+                showFilePrompt();
+            });
+        };
 
-    reader.readAsArrayBuffer(filename);
+        reader.readAsArrayBuffer(filenames[buffernum]);
+    }
 }
 
 if (navigator.appName == "Microsoft Internet Explorer") {

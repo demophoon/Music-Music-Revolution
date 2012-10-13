@@ -40,7 +40,7 @@ td {
     right:100px;
     top:225px;
 }
-#filePrompt{
+#filePrompt {
     background-repeat: repeat;
     background-attachment:fixed;
     background:url(../img/fade.png),url(../img/fg.png),url(../img/mg.png),url(../img/bg.png),url(../img/background.jpg);

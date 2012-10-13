@@ -185,6 +185,8 @@ var bgctx = null;
 var bgcanvasContext = null;
 var width = 0;
 var height = 0;
+var bgwidth = 0;
+var bgheight = 0;
 var frametime = (new Date)*1 - 1;
 var lastframetime = (new Date)*1 - 1;
 
@@ -214,9 +216,13 @@ bg.src = './assets/img/gamebg.jpg';
 function loadGame() {
     canvasContext = document.getElementById('canvas');
     bgcanvasContext = document.getElementById('background');
+    bgcanvasContext.width = $('body').width();
+    bgcanvasContext.height = $('body').height();
     bgBefore = canvasContext;
     width = canvasContext.width;
     height = canvasContext.height;
+    bgwidth = bgcanvasContext.width;
+    bgheight = bgcanvasContext.height;
     yplace = (height*.9) - .5 - (2*hitSize);
     ctx = canvasContext.getContext('2d');
     bgctx = bgcanvasContext.getContext('2d');
@@ -266,71 +272,67 @@ function drawGameStats() {
     
 }
 
+
 var bgBefore = null;
 var visualEffect = {'effect':1,'expires':0};
 var waveformEffect = {'effect':1,'expires':0,'color':'#ffffff'};
 
+
 function drawBackground() {
-    bgctx.globalAlpha = .25;
-    bgctx.drawImage(bg,0,0,width,height);
-    bgctx.globalAlpha = .25;
+    bgctx.globalAlpha = .05;
+    bgctx.fillStyle = '#000000';
+    bgctx.fillRect(0,0,bgwidth,bgheight);
+    bgctx.drawImage(bg,0,0,bgwidth,bgheight);
+    bgctx.globalAlpha = 1;
     
     if (visualEffect['expires'] < audioContext.currentTime) {
-        visualEffect = {'effect':Math.ceil(Math.random()*13),'expires':audioContext.currentTime+1+(Math.random()*20)};
+        visualEffect = {'effect':Math.ceil(Math.random()*11),'expires':audioContext.currentTime+1+(Math.random()*20)};
+        // visualEffect = {'effect':13,'expires':audioContext.currentTime+1+(Math.random()*20)};
     }
     
     bgctx.save();
     
     switch(visualEffect['effect']) {
         case 1:
-            bgctx.translate(width/2, height/2);
+            bgctx.translate(bgwidth/2, bgheight/2);
             bgctx.rotate(2*Math.PI / 90);
-            bgctx.translate( -width/2, -height/2);
-            bgctx.drawImage(bgBefore,0,0,width,height);
+            bgctx.translate( -bgwidth/2, -bgheight/2);
+            bgctx.drawImage(bgBefore,0,0,bgwidth,bgheight);
         break;
         case 2:
-            bgctx.drawImage(bgBefore,Math.random()*10,Math.random()*10,width,height);
+            bgctx.drawImage(bgBefore,Math.random()*10,Math.random()*10,bgwidth,bgheight);
         break;
         case 3:
-            bgctx.drawImage(bgBefore,-1,-20,width+2,height+40);
+            bgctx.drawImage(bgBefore,-1,-20,bgwidth+2,bgheight+40);
         break;
         case 4:
-            bgctx.drawImage(bgBefore,-20,1,width+40,height-2);
+            bgctx.drawImage(bgBefore,-20,1,bgwidth+40,bgheight-2);
         break;
         case 5:
-            bgctx.drawImage(bgBefore,-50,-50,width+100,height+100);
+            bgctx.drawImage(bgBefore,-50,-50,bgwidth+100,bgheight+100);
         break;
         case 6:
-            bgctx.drawImage(bgBefore,20,-10,width+(Math.sin(audioContext.currentTime/5)*40),height+(Math.sin(audioContext.currentTime/2)*40));
+            bgctx.drawImage(bgBefore,20,-10,bgwidth+(Math.sin(audioContext.currentTime/5)*40),bgheight+(Math.sin(audioContext.currentTime/2)*40));
         break;
         case 7:
-            bgctx.drawImage(bgBefore,12-(Math.sin(audioContext.currentTime/8)*25),12-(Math.sin(audioContext.currentTime/3)*20),width,height);
+            bgctx.drawImage(bgBefore,12-(Math.sin(audioContext.currentTime/8)*25),12-(Math.sin(audioContext.currentTime/3)*20),bgwidth,bgheight);
         break;
         case 8:
-            bgctx.drawImage(bgBefore,12-(Math.sin(audioContext.currentTime/7)*30),12-(Math.sin(audioContext.currentTime/4)*11),width+(Math.sin(audioContext.currentTime/5)*37),height+(Math.sin(audioContext.currentTime/2)*12));
+            bgctx.drawImage(bgBefore,12-(Math.sin(audioContext.currentTime/7)*30),12-(Math.sin(audioContext.currentTime/4)*11),bgwidth+(Math.sin(audioContext.currentTime/5)*37),bgheight+(Math.sin(audioContext.currentTime/2)*12));
         break;
         case 9:
-            var centerw = Math.abs(Math.sin(audioContext.currentTime) * (width));
-            var centerh = Math.abs(Math.sin(audioContext.currentTime/3) * (height));
+            var centerw = Math.abs(Math.sin(audioContext.currentTime) * (bgwidth));
+            var centerh = Math.abs(Math.sin(audioContext.currentTime/3) * (bgheight));
             bgctx.translate(centerw, centerh);
             bgctx.rotate((Math.sin(audioContext.currentTime*2)) * 2*Math.PI / 45);
             bgctx.translate(-centerw, -centerh);
-            bgctx.drawImage(bgBefore,-10,-10,width-(Math.sin(audioContext.currentTime*2)*20),height-(Math.sin(audioContext.currentTime*2)*20));
+            bgctx.drawImage(bgBefore,-10,-10,bgwidth-(Math.sin(audioContext.currentTime*2)*20),bgheight-(Math.sin(audioContext.currentTime*2)*20));
         break;
         case 10:
-            bgctx.translate( width/2, height/2);
-            bgctx.rotate(2*Math.PI / (Math.sin(audioContext.currentTime/10)*1));
-            bgctx.translate(-width/2,-height/2);
-            bgctx.drawImage(bgBefore,0,0,width/2,height/2);
-            bgctx.drawImage(bgBefore,width/2,0,width/2,height/2);
-            bgctx.drawImage(bgBefore,0,height/2,width/2,height/2);
-            bgctx.drawImage(bgBefore,width/2,height/2,width/2,height/2);
+            bgctx.drawImage(bgBefore,20,-20,bgwidth-40,bgheight+40);
         break;
         case 11:
-            bgctx.drawImage(bgBefore,width/2,height/2,width/3,height/3,0,0,width/2,height/2);
-            bgctx.drawImage(bgBefore,0,height/2,width/3,height/3,width/2,0,width/2,height/2);
-            bgctx.drawImage(bgBefore,width/2,0,width/3,height/3,0,height/2,width/2,height/2);
-            bgctx.drawImage(bgBefore,0,0,width/4,height/4,width/2,height/2,width/2,height/2);
+            bgctx.drawImage(bgBefore,20+(Math.random()*5),-20-(Math.random()*5),bgwidth-40-(Math.random()*5),bgheight+40+(Math.random()*5));
         break;
     }
     
@@ -341,12 +343,27 @@ function drawBackground() {
     bgBefore = bgcanvasContext;
     
     bgctx.restore();
+    bgctx.globalCompositeOperation = 'source-over';
 }
 
+var frames = 0;
+var fgfps = 60;
+var bgfps = 1;
+var cbgf = 0;
+var cfgf = 0
+
+
+var frametime = (new Date);
 function gameLoop() {
-    frametime = (new Date)*1 - 1;
     
-    drawBackground();
+    frames += 1
+    
+    if (cbgf%bgfps == 0) {
+        drawBackground();
+        cbgf = 0;
+    }
+    
+    cbgf += 1;
     
     drawGameplay();
     
@@ -404,9 +421,17 @@ function gameLoop() {
         ctx.fillText("DEMO PLAY",width/2,3*height/4);
         ctx.globalAlpha = 1;
     }
-    if (endOfSong)
-        endSong();
-    setTimeout(function() { gameLoop() }, (1000/60) - ((new Date)*1-1-frametime));
+    
+    
+    ctx.fillStyle = '#f1f1f1';
+    ctx.textBaseline = "bottom";
+    ctx.textAlign = 'right';
+    ctx.font = "italic 12px arial";
+    
+    ctx.fillText('FPS: ' + ~~(1000/(((new Date)*1)-frametime)),width-5,height-5);
+    
+    frametime = (new Date)*1;
+    setTimeout(function() { gameLoop() }, (1000/fgfps) - ((new Date)*1-1-frametime));
 }
 
 function genHex() {
@@ -444,81 +469,94 @@ function drawWaveform() {
     postanalyser.getByteTimeDomainData(waves);
     postanalyser.getFloatFrequencyData(curfft);
     
-    wavewidth = width/waves.length;
+    wavebgwidth = bgwidth/waves.length;
     
     if (waveformEffect['expires'] < audioContext.currentTime) {
         waveformEffect = {
             'effect':Math.floor(Math.random()*11),
+            // 'effect':Math.floor(10),
             'expires':audioContext.currentTime+1+(Math.random()*20),
             'color':genHex()
         };
     }
     
-    bgctx.fillStyle = waveformEffect['color'];
+    bgctx.fillStyle = waveformEffect['spcolor'] || waveformEffect['color'];
     var wavesize = (400/(curfft[0]+400))*10;
     
     for (var x=0; x<waves.length; x+=1) {
         switch (waveformEffect['effect']) {
             case 0:	// Spectrum
                 bgctx.globalAlpha = .25;
-                bgctx.fillRect(x*(width/(1024 - 512)),height,(width/(1024-512)),-(height/2*(curfft[x]/70))-height);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),bgheight,(bgwidth/(1024-512)),-(bgheight/2*(curfft[x]/70))-bgheight);
                 bgctx.globalAlpha = .1;
             break;
             case 1:	// Waveform 1
-                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/2)-.5,(width/(1024 - 512))*2,2);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),((waves[x]/128)*bgheight/2)-.5,(bgwidth/(1024 - 512))*2,2);
             break;
             case 2: // Waveform 2
-                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/2)-.5,(width/(1024 - 512))*2,(waves[x]-128));
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),((waves[x]/128)*bgheight/2)-.5,(bgwidth/(1024 - 512))*2,(waves[x]-128));
             break;
             case 3: // Spectrum Peaks
-                bgctx.fillRect(x*(width/(1024 - 512)),-(height*(curfft[x]/70))-(height/4),(width/(1024 -512)),2);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),-(bgheight*(curfft[x]/70))-(bgheight/4),(bgwidth/(1024 -512)),2);
             break;
             case 4: // Waveform Boxes
-                bgctx.fillRect(x*(width/(1024 - 512)),(Math.sin(audioContext.currentTime + x/128 + (Math.random()/10))*(height/2))+(height/2),((waves[x-1]-waves[x])*1),((waves[x-1]-waves[x])*1));
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),(Math.sin(audioContext.currentTime + x/128 + (Math.random()/10))*(bgheight/2))+(bgheight/2),((waves[x-1]-waves[x])*1),((waves[x-1]-waves[x])*1));
             break;
             case 5: // Real Waveform
                 bgctx.globalAlpha = 1;
-                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/2)-.5,2,((waves[x-1]-waves[x])*2)+1);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),((waves[x]/128)*bgheight/2)-.5,2,((waves[x-1]-waves[x])*2)+1);
             break;
             case 6: // Waveform Boxes
                 bgctx.globalAlpha = .1;
-                bgctx.fillRect(x*(width/(1024 - 512)),height/2,((waves[x-1]-waves[x])*8),((waves[x-1]-waves[x])*8));
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),bgheight/2,((waves[x-1]-waves[x])*8),((waves[x-1]-waves[x])*8));
                 bgctx.globalAlpha = 1;
             break;
             case 7: // Random Boxes
                 bgctx.globalAlpha = .7;
-                bgctx.fillRect(width*Math.random(),height*Math.random(),((waves[x-2]-waves[x+2])/2),((waves[x-2]-waves[x+2])/2));
+                bgctx.fillRect(bgwidth*Math.random(),bgheight*Math.random(),((waves[x-2]-waves[x+2])/2),((waves[x-2]-waves[x+2])/2));
                 bgctx.globalAlpha = 1;
             break;
             case 8: // Real Waveform
                 bgctx.globalAlpha = 1;
-                bgctx.fillRect(x*(width/(1024 - 512)),-(height*(curfft[x]/100))-(height/4),2,2);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),-(bgheight*(curfft[x]/100))-(bgheight/4),2,2);
             break;
             case 9: // Real Waveform
                 bgctx.globalAlpha = 1;
-                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*height/4)+Math.sin(audioContext.currentTime + x/128)*(height/2)+(height/2),2,((waves[x-1]-waves[x])*2)+1);
-                bgctx.fillRect(x*(width/(1024 - 512)),((waves[x]/128)*3*height/4)+Math.sin(audioContext.currentTime - x/128)*(height/4)+(height/4),2,((waves[x-1]-waves[x])*4)+1);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),((waves[x]/128)*bgheight/4)+Math.sin(audioContext.currentTime + x/128)*(bgheight/2)+(bgheight/2),2,((waves[x-1]-waves[x])*2)+1);
+                bgctx.fillRect(x*(bgwidth/(1024 - 512)),((waves[x]/128)*3*bgheight/4)+Math.sin(audioContext.currentTime - x/128)*(bgheight/4)+(bgheight/4),2,((waves[x-1]-waves[x])*4)+1);
+            break;
+            case 10: // Box Waveform
+                bgctx.globalAlpha = 1;
+                if (x%8 == 0) {
+                    bgctx.fillRect(~~(x*(bgwidth/(1024 - 512))/12)*12,~~(((waves[x]/128)*bgheight/2)/12)*12, 12, 12);
+                }
             break;
             default:
-                bgctx.fillRect(wavewidth*x-(wavesize/2),(waves[x]-128)+(height/2)-(wavesize/2),wavesize,wavesize);
+                bgctx.fillRect(wavebgwidth*x-(wavesize/2),(waves[x]-128)+(bgheight/2)-(wavesize/2),wavesize,wavesize);
         }
     }    
-    
+    waveformEffect['spcolor'] = false;
 }
 
 function drawGameplay() {
-
+    ctx.globalAlpha = 0.25;
     ctx.clearRect(0,0,width,height);
+    ctx.globalAlpha = 1;
     
     $('#score').html(finalscore);
     ctx.strokeStyle = '#dfe448';
     
     ctx.globalCompositeOperation = 'source-over';
     
-    ctx.globalAlpha = 0.75;
+    ctx.globalAlpha = 0.25;
     ctx.fillStyle = '#000000';
+    ctx.fillRect(0,0,width,height);
+    ctx.globalAlpha = 0.75;
     ctx.fillRect(225,0,(width-225)-225+hitSize,height);
     ctx.globalAlpha = 1;
+    
+    if (endOfSong)
+        endSong();
     
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(220,((audioContext.currentTime - startTime)/duration)*height,5,height);
@@ -558,7 +596,8 @@ function drawGameplay() {
     }
 }
 
-function spawnHit(type) {
+function spawnHit(type,intensity) {
+    intensity = intensity || 0;
     cur = hits.length;
     totalPoints += 50;
     lastSpawn = audioContext.currentTime;
@@ -591,6 +630,12 @@ function spawnHit(type) {
             setTimeout(function(){ keyHit({'which':t[type]}); },925+(Math.random()*125));
         }
     }
+    setTimeout(function(){ backgroundBeat(); },1000);
+}
+
+function backgroundBeat() {
+    // bgctx.globalCompositeOperation = 'lighter';
+    waveformEffect['spcolor'] = '#ffffff';
 }
 
 var seal = new Image();
