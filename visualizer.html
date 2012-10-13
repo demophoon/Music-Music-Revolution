@@ -3,6 +3,15 @@
     <head>
         <title>Music Music Revolution</title>
         <link rel="stylesheet" type="text/css" href="./assets/css/mainStyle.css" />
+        <style type='text/css'>
+            #splashScreen, #filePrompt, #loadingScreen, #background{
+                width:100%;
+                height:100%;
+            }
+            #canvas {
+                display:none !important;
+            }
+        </style>
         <script type='text/javascript' src='./assets/js/jquery.js'></script>
         <script type='text/javascript' src='./assets/js/music.js'></script>
         <script type='text/javascript' src='./assets/js/game.js'></script>
@@ -27,8 +36,7 @@
         </script>
     </head>
     <body onmouseover='resetDemoMode()' onkeypress='resetDemoMode()'>
-        <div id='container'>
-            
+
             <div id='loadingScreen'>
                 <center>
                     <br>
@@ -85,6 +93,7 @@
                                                 <option value='2'>Fast</option>
                                                 <option value='1.5'>Medium</option>
                                                 <option value='1' selected>Normal</option>
+                                                <option value='.75'>Slow</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -158,7 +167,7 @@
                 
                 <img id='albumArt' src='./music/theformer/albumart.jpg' />
                 
-                <input type="file" id="files" accept="audio" multiple />
+                <input type="file" id="files" accept="audio" />
                 
             </div>
             
@@ -179,7 +188,6 @@
                     Sorry, Your Browser does not support the Canvas Element needed to play.
                 </canvas>
             </center>
-        </div>
         <center>
             <small>
                 Find a bug? Suggest a Feature? Comment?<br>
