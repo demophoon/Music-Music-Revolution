@@ -64,7 +64,7 @@ function loadThemeMusic() {
             console.log('Audio Decoded');
             $('#initProgress').attr("value",100);
             mmsrc = audioContext.createBufferSource();
-            mmgain = audioContext.createGainNode();
+            mmgain = audioContext.createGain();
             mmgain.gain.value = .9;
             mainMenuBuffer = buffer;
             startMainMenuMusic();
@@ -176,7 +176,7 @@ function startMainMenuMusic() {
     mmsrc.loop = true;
     mmsrc.connect(mmgain);
     mmgain.connect(audioContext.destination);
-    mmsrc.noteOn(audioContext.currentTime);
+    mmsrc.start(audioContext.currentTime);
 }
 
 var ctx = null;

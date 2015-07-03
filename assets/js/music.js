@@ -133,10 +133,10 @@ function play(buffer) {
     playing = true;
 
     source      =       audioContext.createBufferSource();
-    gain        =       audioContext.createGainNode();
+    gain        =       audioContext.createGain();
     bass        =       audioContext.createBiquadFilter();
     treble      =       audioContext.createBiquadFilter();
-    delay       =       audioContext.createDelayNode(5);
+    delay       =       audioContext.createDelay(5);
     compressor  =       audioContext.createDynamicsCompressor();
     splitter    =       audioContext.createChannelSplitter(2);
     merger      =       audioContext.createChannelMerger(2);
@@ -181,7 +181,7 @@ function play(buffer) {
 
     hideFilePrompt();
 
-    source.noteOn(audioContext.currentTime);
+    source.start(audioContext.currentTime);
     startTime = audioContext.currentTime;
 }
 
