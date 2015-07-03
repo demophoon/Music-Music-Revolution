@@ -21,10 +21,10 @@
             function hideAlbumArt() {
                 $('#albumArt').stop(true, false).animate({opacity:0},750);
             }
-            
+
             fgfps = 60;
             bgfps = 2;
-            
+
         </script>
         <script type="text/javascript">
             var _gaq = _gaq || [];
@@ -39,7 +39,7 @@
     </head>
     <body onmouseover='resetDemoMode()' onkeypress='resetDemoMode()'>
         <div id='container'>
-            
+
             <div id='loadingScreen'>
                 <center>
                     <br>
@@ -54,12 +54,12 @@
                     </div>
                 </center>
             </div>
-            
+
             <div id='filePrompt'>
                 <center>
                     <h1>Music Music Revolution</h1>
                 </center>
-                
+
                 <div id='menuContainer'>
                     <div id='accordion'>
                         <div rel='How To Play' class='collapsibleContainer first'>
@@ -70,7 +70,7 @@
                                 <li>If the page crashes or fails to load try selecting a Mp3 without Cover Artwork</li>
                             </div>
                         </div>
-                        
+
                         <div rel='Options' class='collapsibleContainer'>
                             <div class='pad'>
                                 <table>
@@ -102,7 +102,7 @@
                                 </table>
                             </div>
                         </div>
-                        
+
                         <div rel='Song Selection' class='collapsibleContainer'>
                             <div>
                                 <table width='584px' cellspacing=10 id='musicSelection'>
@@ -151,28 +151,28 @@
                                 </table>
                             </div>
                         </div>
-                        
+
                         <div rel='Credits' class='collapsibleContainer'>
                             <div class='pad'>
                                 Created By: Britt Gresham<br>
                                 Artwork: Britt Gresham<hr>
-                                Music: <a href='http://www.mikhailmarchenko.com/'>Michael Marchenko</a>, 
-                                <a href='http://theformermusic.com/'>The Former</a>, 
-                                <a href='http://www.deflektrecords.com/'>Harlan Ray</a>, 
+                                Music: <a href='http://www.mikhailmarchenko.com/'>Michael Marchenko</a>,
+                                <a href='http://theformermusic.com/'>The Former</a>,
+                                <a href='http://www.deflektrecords.com/'>Harlan Ray</a>,
                                 <a href='http://www.themonarchsmusic.com/'>The Monarchs</a>
                             </div>
                         </div>
                     </div>
-					
+
                 </div>
                 <img id='logo' src='./assets/img/logo.gif' />
-                
+
                 <img id='albumArt' src='./music/theformer/albumart.jpg' />
-                
+
                 <input type="file" id="files" accept="audio" />
-                
+
             </div>
-            
+
             <div id='splashScreen'>
                 <center>
                     <br>
@@ -183,7 +183,7 @@
                     Menu Music by The Former<br><br><br>
                     <progress id='initProgress' value='0' max='100'></progress>
             </div>
-            
+
             <center>
                 <canvas id='canvas' width='1024px' height='600px' ></canvas>
                 <canvas id='background' style='background:#000000;' width='256px' height='150px' >

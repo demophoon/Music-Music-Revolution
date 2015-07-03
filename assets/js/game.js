@@ -56,10 +56,10 @@ function loadThemeMusic() {
     req.open('GET', './music/menu/preamble.ogg', true);
     req.responseType = 'arraybuffer';
     req.onprogress = initProgress;
-    
+
     req.onload = function() {
         console.log('Download Complete');
-        
+
         audioContext.decodeAudioData(req.response, function(buffer){
             console.log('Audio Decoded');
             $('#initProgress').attr("value",100);
@@ -68,7 +68,7 @@ function loadThemeMusic() {
             mmgain.gain.value = .9;
             mainMenuBuffer = buffer;
             startMainMenuMusic();
-            setTimeout(function() { 
+            setTimeout(function() {
                 hideSplashScreen();
                 showFilePrompt();
             }, 2000);
@@ -230,7 +230,7 @@ function loadGame() {
 }
 
 function drawGameStats() {
-    
+
     ctx.textAlign = 'start';
     ctx.textBaseline = "middle";
     ctx.font = "9pt Arial";
@@ -238,18 +238,18 @@ function drawGameStats() {
     ctx.fillText("Music Music Revolution",15,height-47);
     ctx.fillText(versionString,15,height-31);
     ctx.fillText("Created By Britt Gresham",15,height-15);
-    
+
     ctx.fillText("Score: " + finalscore,15,24);
     ctx.fillText("Hit Rating: " + rating,15,40);
-    
+
     ctx.textAlign = 'right';
     ctx.fillText("[ESC] to return to Menu",width-11,24);
-    
+
     for (key in lastHits) {
         ctx.fillStyle = '#dfe448';
         ctx.strokeStyle = '#ffffff';
         pump = hitSize + 25;
-        
+
         if (Math.abs(lastHits[key] - audioContext.currentTime) < .25) {
             ctx.globalAlpha = (1-(audioContext.currentTime - lastHits[key])/.1) > 0 ? 1-(audioContext.currentTime - lastHits[key])/.1 : 0;
             switch (key) {
@@ -269,7 +269,7 @@ function drawGameStats() {
             ctx.globalAlpha = 1;
         }
     }
-    
+
 }
 
 
@@ -284,14 +284,14 @@ function drawBackground() {
     bgctx.fillRect(0,0,bgwidth,bgheight);
     bgctx.drawImage(bg,0,0,bgwidth,bgheight);
     bgctx.globalAlpha = 1;
-    
+
     if (visualEffect['expires'] < audioContext.currentTime) {
         visualEffect = {'effect':Math.ceil(Math.random()*11),'expires':audioContext.currentTime+1+(Math.random()*20)};
         // visualEffect = {'effect':13,'expires':audioContext.currentTime+1+(Math.random()*20)};
     }
-    
+
     bgctx.save();
-    
+
     switch(visualEffect['effect']) {
         case 1:
             bgctx.translate(bgwidth/2, bgheight/2);
@@ -335,13 +335,13 @@ function drawBackground() {
             bgctx.drawImage(bgBefore,20+(Math.random()*5),-20-(Math.random()*5),bgwidth-40-(Math.random()*5),bgheight+40+(Math.random()*5));
         break;
     }
-    
+
     if (playing) {
         drawWaveform();
     }
     bgctx.globalAlpha = 1;
     bgBefore = bgcanvasContext;
-    
+
     bgctx.restore();
     bgctx.globalCompositeOperation = 'source-over';
 }
@@ -355,20 +355,20 @@ var cfgf = 0
 
 var frametime = (new Date);
 function gameLoop() {
-    
+
     frames += 1
-    
+
     if (cbgf%bgfps == 0) {
         drawBackground();
         cbgf = 0;
     }
-    
+
     cbgf += 1;
-    
+
     drawGameplay();
-    
+
     drawGameStats();
-    
+
     if (Math.abs(lastHit - audioContext.currentTime) < .5) {
         ctx.font = "italic 50px Calibri";
         ctx.textBaseline = "top";
@@ -381,11 +381,11 @@ function gameLoop() {
         }
         ctx.globalAlpha = 1;
     }
-    
+
     if (combo > maxCombo) {
         maxCombo = combo;
     }
-    
+
     if (combo >= 5) {
         if (combo > 150) {
             multiplier = 32;
@@ -421,15 +421,15 @@ function gameLoop() {
         ctx.fillText("DEMO PLAY",width/2,3*height/4);
         ctx.globalAlpha = 1;
     }
-    
-    
+
+
     ctx.fillStyle = '#f1f1f1';
     ctx.textBaseline = "bottom";
     ctx.textAlign = 'right';
     ctx.font = "italic 12px arial";
-    
+
     ctx.fillText('FPS: ' + ~~(1000/(((new Date)*1)-frametime)),width-5,height-5);
-    
+
     frametime = (new Date)*1;
     setTimeout(function() { gameLoop() }, (1000/fgfps) - ((new Date)*1-1-frametime));
 }
@@ -468,9 +468,9 @@ var curfft = new Float32Array(1024);
 function drawWaveform() {
     postanalyser.getByteTimeDomainData(waves);
     postanalyser.getFloatFrequencyData(curfft);
-    
+
     wavebgwidth = bgwidth/waves.length;
-    
+
     if (waveformEffect['expires'] < audioContext.currentTime) {
         waveformEffect = {
             'effect':Math.floor(Math.random()*11),
@@ -479,10 +479,10 @@ function drawWaveform() {
             'color':genHex()
         };
     }
-    
+
     bgctx.fillStyle = waveformEffect['spcolor'] || waveformEffect['color'];
     var wavesize = (400/(curfft[0]+400))*10;
-    
+
     for (var x=0; x<waves.length; x+=1) {
         switch (waveformEffect['effect']) {
             case 0:	// Spectrum
@@ -534,7 +534,7 @@ function drawWaveform() {
             default:
                 bgctx.fillRect(wavebgwidth*x-(wavesize/2),(waves[x]-128)+(bgheight/2)-(wavesize/2),wavesize,wavesize);
         }
-    }    
+    }
     waveformEffect['spcolor'] = false;
 }
 
@@ -542,31 +542,31 @@ function drawGameplay() {
     ctx.globalAlpha = 0.25;
     ctx.clearRect(0,0,width,height);
     ctx.globalAlpha = 1;
-    
+
     $('#score').html(finalscore);
     ctx.strokeStyle = '#dfe448';
-    
+
     ctx.globalCompositeOperation = 'source-over';
-    
+
     ctx.globalAlpha = 0.25;
     ctx.fillStyle = '#000000';
     ctx.fillRect(0,0,width,height);
     ctx.globalAlpha = 0.75;
     ctx.fillRect(225,0,(width-225)-225+hitSize,height);
     ctx.globalAlpha = 1;
-    
+
     if (endOfSong)
         endSong();
-    
+
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(220,((audioContext.currentTime - startTime)/duration)*height,5,height);
     ctx.fillRect(width-225+hitSize,((audioContext.currentTime - startTime)/duration)*height,5,height);
-    
+
     pump = 0;
     ctx.strokeRect(300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
     ctx.strokeRect((width/2)-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
     ctx.strokeRect(width-300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
-    
+
     for (var x=0; x<hits.length; x+=1) {
         ctx.fillStyle = (hits[x]['color'] == 'rand') ? colors[~~(Math.random()*colors.length)] : hits[x]['color'];
         switch (hits[x]['type']) {
@@ -682,7 +682,7 @@ function endSong() {
     }
     ctx.fillText(grade,centerw,150);
     ctx.font = "bold 30px Calibri";
-    
+
     ctx.fillStyle = "#f1f1f1";
     ctx.fillText('Final Score: ' + finalscore,centerw,300);
     ctx.fillText('MAX COMBO: ' + maxCombo,centerw,350);
@@ -712,17 +712,17 @@ function keyHit(e) {
     }
     types = {37:0,38:1,39:2}
     typesarr = [37,38,39]
-    
+
     if ($.inArray(e.which,typesarr) != -1) {
         keys[e.which] = true;
     }
-    
-    
-    for (var key in keys) {        
+
+
+    for (var key in keys) {
         if (!keys[key]) {
             continue;
         }
-        
+
         keys[key] = true;
         ctx.fillStyle = '#dfe448';
         ctx.strokeStyle = '#ffffff';
@@ -741,7 +741,7 @@ function keyHit(e) {
                 ctx.strokeRect(width-300.5-(pump/2),yplace-(pump/2), hitSize+pump, hitSize+pump);
             break;
         }
-        
+
         keys[key] = false;
         closest = {'distance':0,'index':-1,'type':-1};
         for (var x=0; x<hits.length; x+=1) {
@@ -750,15 +750,15 @@ function keyHit(e) {
                 closest = {'distance':hits[x]['y'],'index':x,'type':hits[x]['type'],'special':special};
             }
         }
-        
+
         kprototypevar = [];
         for (k in types) {
             kprototypevar.push(k);
         }
-        
+
         pts = 0;
         combo += 1;
-        
+
         if (~~Math.abs(closest['distance'] - yplace) <= 1) {
             rating = 'FLAWLESS!';
             pts = 100;
@@ -799,10 +799,10 @@ function keyHit(e) {
             multiplier = 1;
             multiplierMultiplier = 1;
         }
-        
+
         lastHit = audioContext.currentTime;
         lastHits[types[key]] = lastHit;
-        
+
         if (types[key] == closest['type'] && $.inArray(key,kprototypevar) != -1) {
             finalscore += pts * multiplier * multiplierMultiplier;
             currentPoints += pts;
